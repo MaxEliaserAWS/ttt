@@ -463,8 +463,8 @@ public class BasicLayoutState implements LayoutState {
         List<Length> lengths = new java.util.ArrayList<Length>();
         if (Lengths.isLengths(v, getLocation(e, ttsExtentAttrName), context, minMax, treatments, lengths)) {
             assert lengths.size() == 2;
-            double w = Helpers.resolveLength(e, lengths.get(0), Axis.HORIZONTAL, null, null, null, null);
-            double h = Helpers.resolveLength(e, lengths.get(1), Axis.VERTICAL, null, null, null, null);
+            double w = Helpers.resolveLength(e, lengths.get(0), Axis.HORIZONTAL, null, null, null, null, null);
+            double h = Helpers.resolveLength(e, lengths.get(1), Axis.VERTICAL, null, null, null, null, null);
             return new Extent(w, h);
         }
         return getExternalExtent();
@@ -484,10 +484,9 @@ public class BasicLayoutState implements LayoutState {
                     assert lengths.size() == 2;
                     Extent cellResolution = getCellResolution();
                     Extent externalExtent = getExternalExtent();
-                    Extent referenceExtent = externalExtent;
                     Extent fontSize = getFontSize();
-                    double w = Helpers.resolveLength(e, lengths.get(0), Axis.HORIZONTAL, externalExtent, referenceExtent, fontSize, cellResolution);
-                    double h = Helpers.resolveLength(e, lengths.get(1), Axis.VERTICAL, externalExtent, referenceExtent, fontSize, cellResolution);
+                    double w = Helpers.resolveLength(e, lengths.get(0), Axis.HORIZONTAL, externalExtent, externalExtent, externalExtent, fontSize, cellResolution);
+                    double h = Helpers.resolveLength(e, lengths.get(1), Axis.VERTICAL, externalExtent, externalExtent, externalExtent, fontSize, cellResolution);
                     return new Extent(w, h);
                 }
             }
@@ -537,10 +536,9 @@ public class BasicLayoutState implements LayoutState {
                     assert lengths.size() == 2;
                     Extent cellResolution = getCellResolution();
                     Extent externalExtent = getExternalExtent();
-                    Extent referenceExtent = externalExtent;
                     Extent fontSize = getFontSize();
-                    double x = Helpers.resolveLength(e, lengths.get(0), Axis.HORIZONTAL, externalExtent, referenceExtent, fontSize, cellResolution);
-                    double y = Helpers.resolveLength(e, lengths.get(1), Axis.VERTICAL, externalExtent, referenceExtent, fontSize, cellResolution);
+                    double x = Helpers.resolveLength(e, lengths.get(0), Axis.HORIZONTAL, externalExtent, externalExtent, externalExtent, fontSize, cellResolution);
+                    double y = Helpers.resolveLength(e, lengths.get(1), Axis.VERTICAL, externalExtent, externalExtent, externalExtent, fontSize, cellResolution);
                     return new Point(x, y);
                 }
             }

@@ -262,7 +262,7 @@ public class StyleCollector {
                 com.skynav.ttv.model.value.TextReserve ar = retReserve[0];
                 Extent fs = getFirstAvailableFontSize();
                 Length reserve = ar.getReserve();
-                double r = (reserve != null) ? Helpers.resolveLength(e, reserve, Axis.VERTICAL, extBounds, refBounds, fs, cellResolution) : -1;
+                double r = (reserve != null) ? Helpers.resolveLength(e, reserve, Axis.VERTICAL, extBounds, fs, fs, fs, cellResolution) : -1;
                 v = new AnnotationReserve(ar.getPosition().name(), r);
             }
         }
@@ -650,7 +650,7 @@ public class StyleCollector {
                     Measure m = measures.get(0);
                     Axis axis = writingMode.getAxis(BPD);
                     Extent fs = getFirstAvailableFontSize();
-                    v = Double.valueOf(Helpers.resolveMeasure(e, m, axis, extBounds, refBounds, fs, cellResolution, null));
+                    v = Double.valueOf(Helpers.resolveMeasure(e, m, axis, extBounds, refBounds, refBounds, fs, cellResolution, null));
                 }
             }
         }
@@ -687,7 +687,7 @@ public class StyleCollector {
                     Measure m = measures.get(0);
                     Axis axis = writingMode.getAxis(IPD);
                     Extent fs = getFirstAvailableFontSize();
-                    v = Double.valueOf(Helpers.resolveMeasure(e, m, axis, extBounds, refBounds, fs, cellResolution, null));
+                    v = Double.valueOf(Helpers.resolveMeasure(e, m, axis, extBounds, refBounds, refBounds, fs, cellResolution, null));
                 }
             }
         }
@@ -766,9 +766,9 @@ public class StyleCollector {
                 Color c = (toColor != null) ? new Color(toColor.getRed(), toColor.getGreen(), toColor.getBlue(), toColor.getAlpha()) : color;
                 Extent fs = getFirstAvailableFontSize();
                 Length thickness = to.getThickness();
-                double t = Helpers.resolveLength(e, thickness, Axis.VERTICAL, extBounds, refBounds, fs, cellResolution);
+                double t = Helpers.resolveLength(e, thickness, Axis.VERTICAL, extBounds, fs, fs, fs, cellResolution);
                 Length blur = to.getBlur();
-                double b = Helpers.resolveLength(e, blur, Axis.VERTICAL, extBounds, refBounds, fs, cellResolution);
+                double b = Helpers.resolveLength(e, blur, Axis.VERTICAL, extBounds, fs, fs, fs, cellResolution);
                 v = new Outline(c, t, b);
             }
         }
@@ -846,7 +846,7 @@ public class StyleCollector {
                 List<Length> lengths = new java.util.ArrayList<Length>();
                 if (Lengths.isLengths(s.getValue(), new Location(), context, minMax, treatments, lengths)) {
                     assert lengths.size() == 1;
-                    v = Double.valueOf(Helpers.resolveLength(e, lengths.get(0), Axis.VERTICAL, extBounds, refBounds, fs, cellResolution));
+                    v = Double.valueOf(Helpers.resolveLength(e, lengths.get(0), Axis.VERTICAL, extBounds, fs, fs, fs, cellResolution));
                 }
             }
         }
@@ -1129,9 +1129,6 @@ public class StyleCollector {
             return new Extent(fs);
         } else if (Lengths.isLengths(s.getValue(), new Location(), context, minMax, treatments, lengths)) {
             assert lengths.size() > 0;
-            Extent refBounds = this.refBounds;
-            if (!Documents.isElement(e, isdRegionElementName))
-                refBounds = fs;
             // special rule for tts:fontSize: "If the relative unit is EMs
             // (em), then the referenced value is determined as if percentage
             // units were used, where 1em equals 100%." TTML2 section 10.2.21.
@@ -1148,11 +1145,11 @@ public class StyleCollector {
             }
             double w, h;
             if (lengths.size() == 1) {
-                h = Helpers.resolveLength(e, lengths.get(0), Axis.VERTICAL, extBounds, refBounds, fs, cellResolution);
+                h = Helpers.resolveLength(e, lengths.get(0), Axis.VERTICAL, extBounds, fs, cellResolution, fs, cellResolution);
                 w = h;
             } else {
-                w = Helpers.resolveLength(e, lengths.get(0), Axis.HORIZONTAL, extBounds, refBounds, fs, cellResolution);
-                h = Helpers.resolveLength(e, lengths.get(1), Axis.VERTICAL, extBounds, refBounds, fs, cellResolution);
+                w = Helpers.resolveLength(e, lengths.get(0), Axis.HORIZONTAL, extBounds, fs, cellResolution, fs, cellResolution);
+                h = Helpers.resolveLength(e, lengths.get(1), Axis.VERTICAL, extBounds, fs, cellResolution, fs, cellResolution);
             }
             return new Extent(w, h);
         } else

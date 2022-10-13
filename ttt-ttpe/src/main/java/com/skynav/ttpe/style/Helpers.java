@@ -91,13 +91,13 @@ public class Helpers {
             bpdAxis = Axis.VERTICAL;
         }
         assert pBefore != null;
-        double p1 = resolveLength(e, pBefore, bpdAxis, external, reference, font, cellResolution);
+        double p1 = resolveLength(e, pBefore, bpdAxis, external, reference, external, font, cellResolution);
         assert pEnd != null;
-        double p2 = resolveLength(e, pEnd, ipdAxis, external, reference, font, cellResolution);
+        double p2 = resolveLength(e, pEnd, ipdAxis, external, reference, external, font, cellResolution);
         assert pAfter != null;
-        double p3 = resolveLength(e, pAfter, bpdAxis, external, reference, font, cellResolution);
+        double p3 = resolveLength(e, pAfter, bpdAxis, external, reference, external, font, cellResolution);
         assert pStart != null;
-        double p4 = resolveLength(e, pStart, ipdAxis, external, reference, font, cellResolution);
+        double p4 = resolveLength(e, pStart, ipdAxis, external, reference, external, font, cellResolution);
         return new double[]{p1, p2, p3, p4};
     }
 
@@ -113,38 +113,22 @@ public class Helpers {
         Length lx = lengths[0];
         if (lx == null)
             lx = LengthImpl.PCT_0;
-        double x;
-        if (lx.getUnits() == Length.Unit.Percentage)
-            x = (lx.getValue() / 100) * referencePercent.getWidth();
-        else
-            x = resolveLength(e, lx, Axis.HORIZONTAL, external, reference, null, cellResolution);
+        double x = resolveLength(e, lx, Axis.HORIZONTAL, external, referencePercent, referencePercent, null, cellResolution);
 
         Length ly = lengths[1];
         if (ly == null)
             ly = LengthImpl.PCT_0;
-        double y;
-        if (ly.getUnits() == Length.Unit.Percentage)
-            y = (ly.getValue() / 100) * referencePercent.getHeight();
-        else
-            y = resolveLength(e, ly, Axis.VERTICAL, external, reference, null, cellResolution);
+        double y = resolveLength(e, ly, Axis.VERTICAL, external, referencePercent, referencePercent, null, cellResolution);
 
         Length ox = lengths[2];
         if (ox == null)
             ox = LengthImpl.PCT_0;
-        double xOffset;
-        if (ox.getUnits() == Length.Unit.Percentage)
-            xOffset = (ox.getValue() / 100) * referencePercent.getWidth();
-        else
-            xOffset = resolveLength(e, ox, Axis.HORIZONTAL, external, reference, null, cellResolution);
+        double xOffset = resolveLength(e, ox, Axis.HORIZONTAL, external, referencePercent, referencePercent, null, cellResolution);
 
         Length oy = lengths[3];
         if (oy == null)
             oy = LengthImpl.PCT_0;
-        double yOffset;
-        if (oy.getUnits() == Length.Unit.Percentage)
-            yOffset = (oy.getValue() / 100) * referencePercent.getHeight();
-        else
-            yOffset = resolveLength(e, oy, Axis.VERTICAL, external, reference, null, cellResolution);
+        double yOffset = resolveLength(e, oy, Axis.VERTICAL, external, referencePercent, referencePercent, null, cellResolution);
 
         x -= xOffset;
         y -= yOffset;
@@ -155,15 +139,15 @@ public class Helpers {
             return new Point(x, y);
     }
 
-    public static double resolveLength(Element e, Length l, Axis axis, Extent external, Extent reference, Extent font, Extent cellResolution) {
-        return (l != null) ? l.getValue() * getLengthReference(e, l.getUnits(), axis, external, reference, font, cellResolution) : 0;
+    public static double resolveLength(Element e, Length l, Axis axis, Extent external, Extent reference, Extent regionReference, Extent font, Extent cellResolution) {
+        return (l != null) ? l.getValue() * getLengthReference(e, l.getUnits(), axis, external, reference, regionReference, font, cellResolution) : 0;
     }
 
-    private static double getLengthReference(Element e, Length.Unit units, Axis axis, Extent external, Extent reference, Extent font, Extent cellResolution) {
+    private static double getLengthReference(Element e, Length.Unit units, Axis axis, Extent external, Extent reference, Extent regionReference, Extent font, Extent cellResolution) {
         if (units == Length.Unit.Pixel)
             return 1;
         else if ((units == Length.Unit.Percentage) && (reference != null))
-            return getPercentageReference(e, axis, external, reference);
+            return getPercentageReference(e, axis, regionReference, reference);
         else if ((units == Length.Unit.Em) && (font != null))
             return getFontSizeReference(e, axis, font);
         else if ((units == Length.Unit.Cell) && (cellResolution != null))
@@ -176,9 +160,9 @@ public class Helpers {
             return 1;
     }
 
-    private static double getPercentageReference(Element e, Axis axis, Extent external, Extent reference) {
+    private static double getPercentageReference(Element e, Axis axis, Extent regionReference, Extent reference) {
         if (Documents.isElement(e, isdRegionElementName)) {
-            return getReference(axis, external) / 100;
+            return getReference(axis, regionReference) / 100;
         } else {
             return getReference(axis, reference) / 100;
         }
@@ -209,7 +193,7 @@ public class Helpers {
             return reference.getWidth();
     }
 
-    public static double resolveMeasure(Element e, Measure m, Axis axis, Extent external, Extent reference, Extent font, Extent cellResolution, Measure.Resolver resolver) {
+    public static double resolveMeasure(Element e, Measure m, Axis axis, Extent external, Extent reference, Extent regionReference, Extent font, Extent cellResolution, Measure.Resolver resolver) {
         if (m != null) {
             Length l;
             if (m.isResolved()) {
@@ -220,7 +204,7 @@ public class Helpers {
                 }
                 l = m.resolve(resolver);
             }
-            return resolveLength(e, l, axis, external, reference, font, cellResolution);
+            return resolveLength(e, l, axis, external, reference, regionReference, font, cellResolution);
         } else {
             return 0;
         }
